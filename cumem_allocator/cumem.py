@@ -10,6 +10,7 @@
 import dataclasses
 import gc
 import os
+import atexit
 from contextlib import contextmanager
 from typing import Any, Callable, Dict, Optional, Tuple, Union
 
@@ -149,6 +150,8 @@ class CuMemAllocator:
         self.pointer_to_data: Dict[int, AllocationData] = {}
         self.current_tag: str = CuMemAllocator.default_tag
         self.allocator_and_pools: Dict[str, Any] = {}
+        # register cleanup to clear memory pools and data at Python exit
+        atexit.register(self._cleanup)
 
     def python_malloc_callback(self, allocation_handle: HandleType) -> None:
         """
@@ -276,3 +279,8 @@ class CuMemAllocator:
             handle = data.handle
             sum_bytes += handle[1]
         return sum_bytes
+
+    def _cleanup(self) -> None:
+        """Cleanup memory pools and pointer data at Python exit."""
+        self.allocator_and_pools.clear()
+        self.pointer_to_data.clear()

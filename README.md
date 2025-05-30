@@ -6,7 +6,3 @@ All credits goes to the vllm team.
 ```bash
 pip -v install -e .
 ```
-
-### known issue
-
-There seems to be error when exiting the program.
