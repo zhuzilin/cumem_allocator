@@ -10,7 +10,7 @@ from shutil import which
 
 import torch
 from packaging.version import Version, parse
-from setuptools import Extension, setup
+from setuptools import Extension, setup, find_packages
 from setuptools.command.build_ext import build_ext
 from torch.utils.cpp_extension import CUDA_HOME
 
@@ -218,4 +218,5 @@ setup(
     version="0.0.1",
     ext_modules=[CMakeExtension(name="cumem_allocator.cumem_allocator")],
     cmdclass= { "build_ext": cmake_build_ext },
+    packages=find_packages(),
 )
